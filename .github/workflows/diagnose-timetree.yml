@@ -1,0 +1,26 @@
+name: Diagnose TimeTree Calendar
+
+on:
+  workflow_dispatch:
+
+jobs:
+  diagnose:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install TimeTree exporter
+        run: pip install ./vendor/timetree_exporter
+
+      - name: List active calendar names and alias codes
+        env:
+          TIMETREE_EMAIL: ${{ secrets.TIMETREE_EMAIL }}
+          TIMETREE_PASSWORD: ${{ secrets.TIMETREE_PASSWORD }}
+        run: python src/diagnose_timetree_calendars.py
