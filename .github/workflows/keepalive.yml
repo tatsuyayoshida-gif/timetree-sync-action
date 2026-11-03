@@ -1,0 +1,26 @@
+name: Keepalive
+
+# GitHubは60日間リポジトリに更新がないと定期実行(schedule)を自動停止する。
+# それを防ぐため、月1回空コミットを作って「更新あり」の状態を保つ。
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 0 1 * *"
+
+permissions:
+  contents: write
+
+jobs:
+  keepalive:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Empty commit
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit --allow-empty -m "chore: keepalive to prevent scheduled workflow auto-disable"
+          git push
